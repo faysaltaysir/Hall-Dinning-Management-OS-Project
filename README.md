@@ -1,6 +1,7 @@
 # Hall-Dinning-Management-OS-Project
 
-# Dinning Management
+# Dinning Management 
+# Must use all the sintex tought in the course ..
 
 - Admin interface (Hall dinning manager)
     - [x]  admin login interface                 -> (done)
