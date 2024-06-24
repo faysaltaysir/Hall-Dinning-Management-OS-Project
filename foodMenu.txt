@@ -38,3 +38,30 @@
 ## Dinner Item -> Day 5: 
 1)dineeeer
 
+## Lunch Item -> Day 1: 
+1)12
+
+## Lunch Item -> Day 3: 
+1)qwe
+
+## Lunch Item -> Day 12: 
+1)qwe
+2)qwe
+3)qe
+
+## Lunch Item -> Day 14: 
+1)qwer
+2)qeerr
+
+## Dinner Item -> Day 15: 
+1)wew
+2)wer
+
+## Lunch Item -> Day 15: 
+1)jnjk
+2)jkkj
+
+## Lunch Item -> Day 16: 
+1)565
+2)5
+

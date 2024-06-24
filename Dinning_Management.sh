@@ -4,6 +4,7 @@ a=1
 USERLIST_FILE="userList.txt"
 USERIDFILE="userId.txt"
 ADMINLIST_FILE="adminList.txt"
+TOKEN_FILE="tokenBuyList.txt"
 check_credentials() {
     local username=$1
     local password=$2
@@ -34,6 +35,15 @@ check_validId() {
     return 1
 }
 
+calculate_total(){
+    local TOKENFILE=$1
+    sum=0
+    while IFS=: read -r stored_id stored_num;do
+        let sum=sum+stored_num
+    done < "$TOKENFILE"
+    echo $sum
+}
+
 
 
 while [ $a = 1 ]
@@ -50,16 +60,18 @@ while [ $a = 1 ]
         if [ $temp = 3 ];then
             a=-1;
         fi
+        flag3=0
         while  [ $temp = 1 ]
             do
-                echo "## Admin Login Interface ##"
-                echo "Input your credential"
-                
-                read -p "Username: " userX 
-                read -p "Password: " passX
-                res2=$(check_credentials "$userX" "$passX" "$ADMINLIST_FILE")
-                echo "Login $res2"
-                
+                if [ $flag3 = 0 ];then
+                    echo "## Admin Login Interface ##"
+                    echo "Input your credential"
+                    
+                    read -p "Username: " userX 
+                    read -p "Password: " passX
+                    res2=$(check_credentials "$userX" "$passX" "$ADMINLIST_FILE")
+                    echo "Login $res2"
+                fi
                 if [ $res2 = "successful" ];then
 
                     echo "---------------------------------"
@@ -70,7 +82,7 @@ while [ $a = 1 ]
                     echo
                     echo "choose your option"
                     echo "1) Update food menu"
-                    echo "2) Update token list"
+                    echo "2) Token sell list view"
                     echo "3) Log Out from Admin Pannel"
                     read -p "Input your choice: " option
                     if [ $option = 3 ];then
@@ -78,9 +90,11 @@ while [ $a = 1 ]
                         echo "-------------------------"
                         echo "   Successfully Logout   "
                         echo "-------------------------"
+                        flag3=0
                         break;
                     fi
-                    while [ $option = 1 ]
+                    flag2=0
+                    while [ $option = 1 -a $flag2 = 0 ]
                         do
                             
                             echo
@@ -123,20 +137,32 @@ while [ $a = 1 ]
                                         done
                                         echo "" >> foodMenu.txt
                                     elif [ $x = 3 ];then
+                                        flag2=1
+                                        flag3=1
                                         break;
                                     fi 
                                 done
-                            echo
-                            echo
-                            echo "choose your option"
-                            echo "1) Update food menu"
-                            echo "2) Update token list ~~> not available write now"
-                            echo "3) Log Out from Admin Pannel"
-                            read -p "Input your choice: " option
-                            if [ $option = 3 ];then
-                                temp=-1
-                            fi
+                            # echo
+                            # echo
+                            # echo "choose your option"
+                            # echo "1) Update food menu"
+                            # echo "2) Token sell list view"
+                            # echo "3) Log Out from Admin Pannel"
+                            # read -p "Input your choice: " option
+                            # if [ $option = 3 ];then
+                            #     temp=-1
+                            # fi
+                            # if [ $option = 2 ];then
+                            #     break;
+                            # fi
                         done
+                    if [ $option = 2 ];then
+                        cat $TOKEN_FILE
+                        result=$(calculate_total $TOKEN_FILE)
+                        echo "Total Sold number: $result"
+                        flag3=1
+                    fi
+
                 elif [ $res2 != "successful" ];then
 
                     echo "1) press "1" to continue"
@@ -161,11 +187,15 @@ while [ $a = 1 ]
                 read -p "password: " passU
                 res=$(check_credentials "$userU" "$passU" "$USERLIST_FILE")
                 echo "Login $res"
+                flag=1
                 while [ $res = "successful" ]
-                do
-                    echo "---------------------------------"
-                    echo "        Successfully LogIn       "
-                    echo "---------------------------------"
+                do  
+                    if [ $flag = 1 ];then
+                        echo "---------------------------------"
+                        echo "        Successfully LogIn       "
+                        echo "---------------------------------"
+                        flag=0
+                    fi
                     echo "choose your option"
                     echo "1) See Food Menu"
                     echo "2) Buy Token"
@@ -177,7 +207,7 @@ while [ $a = 1 ]
                     fi
                     if [ $option = 2 ];then
                         read -p "Number of token want to buy" num
-                        echo "$user:$num" >> "tokenBuyList.txt"
+                        echo "$userU:$num" >> "tokenBuyList.txt"
                     fi
                     if [ $option = 3 ];then
                         temp=-1
