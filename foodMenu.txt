@@ -1,0 +1,34 @@
+## Lunch Item -> Day 1: 
+1)rice
+2)lentil
+3)curry
+
+## Dinner Item -> Day 1: 
+1)polao
+2)roast
+3)lentil
+## Lunch Item -> Day 4: 
+1)cat
+2)dog
+
+## Dinner Item -> Day 4: 
+1)cat
+2)gog
+
+## Lunch Item -> Day 3: 
+1)123
+
+## Lunch Item -> Day 1: 
+1)1
+2)1
+
+## Lunch Item -> Day 1: 
+1)dsf
+2)sdf
+3)sf
+
+## Lunch Item -> Day 2: 
+1)google
+2)yt
+3)ds
+
