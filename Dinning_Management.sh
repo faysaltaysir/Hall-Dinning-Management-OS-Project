@@ -50,8 +50,8 @@ while [ $a = 1 ]
     do
         echo "### Hall Dinning Management ###"
         echo "choose your option"
-        echo "1) Admin Login ~> update food menu"
-        echo "2) User Login ~> see food menu"
+        echo "1) Admin Login"
+        echo "2) User Login"
         echo "3) Exit"
         echo "4) User Register"
         read -p "Input your choice: " temp
@@ -99,37 +99,49 @@ while [ $a = 1 ]
                             
                             echo
                             echo "Input the name today's food menu "
-                            echo "note: food name should be one word ~> Needs to update"
                             echo "-> write 'done' to end inputs"
                             
                             i=0
-                            read -p "Day Number: " day
+                            # read -p "Day Number: " day
+                            current_date_time=$(date +"%d-%m-%y")
+                            flag4=0
                             while [ 1 ]
-                                do
+                                do  
+                                    if [ $flag4 = 0 ];then
+                                        echo "--------------------" >> foodMenu.txt
+                                        echo "${current_date_time}" >> foodMenu.txt
+                                        echo "--------------------" >> foodMenu.txt
+                                        flag4=1
+                                    fi
+                                    echo "--------------------"
+                                    echo "${current_date_time}"
+                                    echo "--------------------"
+
                                     echo "1) Update todays Lunch: "
                                     echo "2) Update todays Dinner: "
                                     echo "3) Exit"
                                     read -p "Choose your option: " x
                                     if [ $x = 1 ];then
-                                        echo "## Lunch Item -> Day ${day}: " >> foodMenu.txt 
+                                        echo "## Lunch Item -> " >> foodMenu.txt 
                                         menu="none"
                                         i=0
-                                        while [ $menu != "done" ]
+                                        while [ "$menu" != "done" ]
                                         do
-                                            read menu
-                                            if [ $menu != "done" ];then
+                                            read -r menu
+                                            echo "$menu"
+                                            if [ "$menu" != "done" ];then
                                                 let i=i+1
                                                 echo "$i)$menu" >> foodMenu.txt
                                             fi
                                         done
                                         echo "" >> foodMenu.txt
                                     elif [ $x = 2 ];then
-                                        echo "## Dinner Item -> Day ${day}: " >> foodMenu.txt 
+                                        echo "## Dinner Item -> Day ${current_date_time}: " >> foodMenu.txt 
                                         menu="none"
                                         i=0
                                         while [ $menu != "done" ]
                                         do
-                                            read menu
+                                            read -r menu
                                             if [ $menu != "done" ];then
                                                 let i=i+1
                                                 echo "$i)$menu" >> foodMenu.txt
@@ -243,7 +255,7 @@ while [ $a = 1 ]
                     echo $username:$password >> userList.txt
                     # echo $username:$password >> adminList.txt
                     # checkId="invalid"
-                    break;        
+                    # break;        
                 fi
             done
     done
