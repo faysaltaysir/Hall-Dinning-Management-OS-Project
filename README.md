@@ -10,6 +10,7 @@
     - [ ]  daily expenditure update
     - [ ]  full month expenditure
 - User interface (students of hall)
-    - [ ]  sign up and login
+    - [x]  sign up and login
+    - [x]  Check validity before creating account
     - [x]  view daily food menu updated by admin -> (done)
     - [ ]  view total token bought

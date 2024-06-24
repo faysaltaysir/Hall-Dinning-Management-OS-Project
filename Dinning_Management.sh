@@ -2,6 +2,7 @@
 declare -a foods
 a=1
 USERLIST_FILE="userList.txt"
+USERIDFILE="userId.txt"
 ADMINLIST_FILE="adminList.txt"
 check_credentials() {
     local username=$1
@@ -15,6 +16,21 @@ check_credentials() {
     done < "$LIST_FILE"
 
     echo "failed"
+    return 1
+}
+
+check_validId() {
+    local username=$1
+    local LIST_FILE=$2
+
+    while read -r stored_username; do
+        if [[ "$username" == "$stored_username" ]]; then
+            echo "valid"
+            return 0
+        fi
+    done < "$LIST_FILE"
+
+    echo "invalid"
     return 1
 }
 
@@ -139,7 +155,6 @@ while [ $a = 1 ]
             do
                 
                 echo "## User Login Interface ##"
-                echo "Welcome $user"
                 echo 
                 echo
                 read -p "username: " userU
@@ -153,11 +168,16 @@ while [ $a = 1 ]
                     echo "---------------------------------"
                     echo "choose your option"
                     echo "1) See Food Menu"
+                    echo "2) Buy Token"
                     echo "3) Logout from your profile"
                     read -p "Input your choice: " option
                     if [ $option = 1 ];then
                         echo 
                         cat foodMenu.txt
+                    fi
+                    if [ $option = 2 ];then
+                        read -p "Number of token want to buy" num
+                        echo "$user:$num" >> "tokenBuyList.txt"
                     fi
                     if [ $option = 3 ];then
                         temp=-1
@@ -182,12 +202,18 @@ while [ $a = 1 ]
                 read -p "Username: " username
                 read -p "Password: " password
                 read -p "Confirm password: " confpass
-                if [ $confpass = $password ];then
+                checkId=$(check_validId "$username" "$USERIDFILE")
+                echo $checkId
+                if [ $checkId = "invalid" ];then
+                    echo "User is not a member of the House"
+
+                elif [ $confpass = $password ];then
                     echo "Password Matched"
                     echo "Account Created Successfully"
                     echo $username:$password >> userList.txt
                     # echo $username:$password >> adminList.txt
-                    break;
+                    # checkId="invalid"
+                    break;        
                 fi
             done
     done
