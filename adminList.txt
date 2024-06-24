@@ -1,2 +1,1 @@
-faysal:123
-ab:ab
+admin:123
