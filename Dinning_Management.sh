@@ -60,6 +60,7 @@ while [ $a = 1 ]
         if [ $temp = 3 ];then
             a=-1;
         fi
+        flag5=0
         flag3=0
         while  [ $temp = 1 ]
             do
@@ -73,11 +74,14 @@ while [ $a = 1 ]
                     echo "Login $res2"
                 fi
                 if [ $res2 = "successful" ];then
-
-                    echo "---------------------------------"
-                    echo "        Successfully LogIn       "
-                    echo "---------------------------------"
-                    echo "# Welcome to Admin Pannel Mr. $user"
+                    if [ flag5 = 0 ];then
+                        
+                        echo "---------------------------------"
+                        echo "        Successfully LogIn       "
+                        echo "---------------------------------"
+                        flag5=1
+                    fi
+                    echo "# Welcome to Admin Pannel"
                     echo
                     echo
                     echo "choose your option"
@@ -219,7 +223,30 @@ while [ $a = 1 ]
                     fi
                     if [ $option = 2 ];then
                         read -p "Number of token want to buy" num
-                        echo "$userU:$num" >> "tokenBuyList.txt"
+                        # echo "$userU:$num" >> "tokenBuyList.txt"
+                        sum=0
+                        total=0
+                        j=0
+                        while IFS=: read -r stored_id stored_num;do
+                            let j=j+1
+                            echo ${j}
+                            if [ $stored_id = $userU ];then
+                                let sum=num+stored_num
+                                echo "$sum"
+                                echo "$userU:$sum" >> "tokenBuyList.txt"
+                                echo "token bought sucessfully"
+                                let total=num*2*40
+                                echo "Total due: $total tk"
+                                break;
+                            else 
+                                echo "$userU:$num" >> "tokenBuyList.txt"
+                                echo "token bought sucessfully"
+                                let total=num*2*40
+                                echo "Total due: $total tk"
+                                break;
+                            # echo $stored_id
+                            fi    
+                        done < "$TOKEN_FILE"
                     fi
                     if [ $option = 3 ];then
                         temp=-1
@@ -255,7 +282,7 @@ while [ $a = 1 ]
                     echo $username:$password >> userList.txt
                     # echo $username:$password >> adminList.txt
                     # checkId="invalid"
-                    # break;        
+                    break;        
                 fi
             done
     done

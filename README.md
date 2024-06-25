@@ -6,7 +6,7 @@
 - Admin interface (Hall dinning manager)
     - [x]  admin login interface                 -> (done)
     - [x]  update daily food menu                -> (done)
-    - [ ]  number of token sell info
+    - [x]  number of token sell info
     - [ ]  daily expenditure update
     - [ ]  full month expenditure
 - User interface (students of hall)
