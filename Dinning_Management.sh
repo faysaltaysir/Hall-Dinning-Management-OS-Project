@@ -20,6 +20,22 @@ check_credentials() {
     return 1
 }
 
+check_tokenbuy() {
+    local username=$1
+    local number=$2
+    local LIST_FILE=$3
+    total=0
+    while IFS=: read -r stored_username stored_number; do
+        if [[ "$username" == "$stored_username" ]]; then
+            let total=total+stored_number
+            # echo "present"
+            # return 0
+        fi
+    done < "$LIST_FILE"
+    echo $total
+    return 1
+}
+
 check_validId() {
     local username=$1
     local LIST_FILE=$2
@@ -34,6 +50,20 @@ check_validId() {
     echo "invalid"
     return 1
 }
+check_validId2() {
+    local username=$1
+    local LIST_FILE=$2
+
+    while IFS=: read -r stored_username stored_password; do
+        if [[ "$username" == "$stored_username" ]]; then
+            echo in"valid"
+            return 0
+        fi
+    done < "$LIST_FILE"
+
+    echo "valid"
+    return 1
+}
 
 calculate_total(){
     local TOKENFILE=$1
@@ -41,7 +71,7 @@ calculate_total(){
     while IFS=: read -r stored_id stored_num;do
         let sum=sum+stored_num
     done < "$TOKENFILE"
-    echo $sum
+    echo $stored_id $sum
 }
 
 
@@ -132,7 +162,7 @@ while [ $a = 1 ]
                                         while [ "$menu" != "done" ]
                                         do
                                             read -r menu
-                                            echo "$menu"
+                                            # echo "$menu"
                                             if [ "$menu" != "done" ];then
                                                 let i=i+1
                                                 echo "$i)$menu" >> foodMenu.txt
@@ -173,7 +203,9 @@ while [ $a = 1 ]
                             # fi
                         done
                     if [ $option = 2 ];then
+                        echo "ID     :TokenBought"
                         cat $TOKEN_FILE
+                        # bought=$(check_tokenbuy "$userU" "$num" "tokenBuyList.txt")
                         result=$(calculate_total $TOKEN_FILE)
                         echo "Total Sold number: $result"
                         flag3=1
@@ -215,40 +247,39 @@ while [ $a = 1 ]
                     echo "choose your option"
                     echo "1) See Food Menu"
                     echo "2) Buy Token"
-                    echo "3) Logout from your profile"
+                    echo "3) See token due"
+                    echo "4) Logout from your profile"
                     read -p "Input your choice: " option
                     if [ $option = 1 ];then
                         echo 
                         cat foodMenu.txt
                     fi
                     if [ $option = 2 ];then
-                        read -p "Number of token want to buy" num
-                        # echo "$userU:$num" >> "tokenBuyList.txt"
-                        sum=0
-                        total=0
-                        j=0
-                        while IFS=: read -r stored_id stored_num;do
-                            let j=j+1
-                            echo ${j}
-                            if [ $stored_id = $userU ];then
-                                let sum=num+stored_num
-                                echo "$sum"
-                                echo "$userU:$sum" >> "tokenBuyList.txt"
-                                echo "token bought sucessfully"
-                                let total=num*2*40
-                                echo "Total due: $total tk"
-                                break;
-                            else 
-                                echo "$userU:$num" >> "tokenBuyList.txt"
-                                echo "token bought sucessfully"
-                                let total=num*2*40
-                                echo "Total due: $total tk"
-                                break;
-                            # echo $stored_id
-                            fi    
-                        done < "$TOKEN_FILE"
+                        current_date_time=$(date +"%d-%m-%y")
+                        read -p "Number of token want to buy: " num
+                        echo "$userU:$num" >> "tokenBuyList.txt"
+                        bought=$(check_tokenbuy "$userU" "$num" "tokenBuyList.txt")
+                        echo
+                        echo "Total token bought: $bought"
+                        let tot=bought*80
+                        echo "Total amount due: $tot"
+                        # check=$(check_validId "$userId" "totalBuy.txt")
+                        # if [ "$check" = "valid" ];then
+                        #     echo "$userU : $bought : $tot" >> "totalBuy.txt"
+                        # fi
+                        
+
                     fi
                     if [ $option = 3 ];then
+                        # read -p "Number of token want to buy" num
+                        # echo "$userU:$num" >> "tokenBuyList.txt"
+                        bought=$(check_tokenbuy "$userU" "$num" "tokenBuyList.txt")
+                        echo "Total token bought: $bought"
+                        let tot=bought*80
+                        echo "Total amount due: $tot"
+
+                    fi
+                    if [ $option = 4 ];then
                         temp=-1
                         res="unsucessful"
                     fi
@@ -272,14 +303,21 @@ while [ $a = 1 ]
                 read -p "Password: " password
                 read -p "Confirm password: " confpass
                 checkId=$(check_validId "$username" "$USERIDFILE")
-                echo $checkId
-                if [ $checkId = "invalid" ];then
-                    echo "User is not a member of the House"
-
-                elif [ $confpass = $password ];then
+                checkId2=$(check_validId2 "$username" "$USERLIST_FILE")
+                # echo $checkId
+                # echo $checkId2
+                if [ "$checkId" = "invalid" ];then
+                    echo "UserId is not a member of the House."
+                    echo
+                    break;
+                elif [ "$checkId2" = "invalid" ];then
+                    echo "Already you have an account."
+                    echo
+                    break;
+                elif [ "$confpass" = "$password" -a "$checkId2" = "valid" ];then
                     echo "Password Matched"
                     echo "Account Created Successfully"
-                    echo $username:$password >> userList.txt
+                    echo "$username":"$password" >> userList.txt
                     # echo $username:$password >> adminList.txt
                     # checkId="invalid"
                     break;        
